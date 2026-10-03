@@ -1,0 +1,80 @@
+[
+  {
+    "artifact_id": "img_auth_01",
+    "type": "image",
+    "filename": "official_press.jpg",
+    "mime_type": "image/jpeg",
+    "evidence": [
+      {
+        "type": "person",
+        "value": {
+          "person_id": "person_01",
+          "face_index": 0,
+          "bbox": [100, 50, 350, 400],
+          "age": 35,
+          "gender": "M"
+        },
+        "confidence": 0.98,
+        "source_model": "insightface/buffalo_l"
+      },
+      {
+        "type": "manipulation",
+        "value": "authentic_visual",
+        "confidence": 0.94,
+        "source_model": "dima806/deepfake_vs_real_image_detection"
+      },
+      {
+        "type": "metadata",
+        "value": {
+          "size_bytes": 2104500,
+          "filename": "official_press.jpg",
+          "make": "Canon",
+          "model": "EOS R5",
+          "gps_present": true
+        },
+        "confidence": 1.0,
+        "source_model": "metadata_analyzer"
+      }
+    ],
+    "analysis_errors": []
+  },
+  {
+    "artifact_id": "img_auth_02",
+    "type": "image",
+    "filename": "speech_stage.jpg",
+    "mime_type": "image/jpeg",
+    "evidence": [
+      {
+        "type": "person",
+        "value": {
+          "person_id": "person_01",
+          "face_index": 0,
+          "bbox": [120, 60, 360, 420],
+          "age": 36,
+          "gender": "M"
+        },
+        "confidence": 0.96,
+        "source_model": "insightface/buffalo_l"
+      },
+      {
+        "type": "manipulation",
+        "value": "authentic_visual",
+        "confidence": 0.91,
+        "source_model": "dima806/deepfake_vs_real_image_detection"
+      },
+      {
+        "type": "metadata",
+        "value": {
+          "size_bytes": 1950400,
+          "filename": "speech_stage.jpg",
+          "make": "Canon",
+          "model": "EOS R5",
+          "gps_present": true
+        },
+        "confidence": 1.0,
+        "source_model": "metadata_analyzer"
+      }
+    ],
+    "analysis_errors": []
+  }
+]

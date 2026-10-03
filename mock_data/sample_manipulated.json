@@ -1,0 +1,46 @@
+[
+  {
+    "artifact_id": "img_manip_01",
+    "type": "image",
+    "filename": "edited_portrait.jpg",
+    "mime_type": "image/jpeg",
+    "evidence": [
+      {
+        "type": "person",
+        "value": {
+          "person_id": "person_99",
+          "face_index": 0,
+          "bbox": [80, 40, 300, 360],
+          "age": 28,
+          "gender": "F"
+        },
+        "confidence": 0.95,
+        "source_model": "insightface/buffalo_l"
+      },
+      {
+        "type": "manipulation",
+        "value": "synthetic_visual",
+        "confidence": 0.89,
+        "source_model": "dima806/deepfake_vs_real_image_detection"
+      },
+      {
+        "type": "manipulation",
+        "value": "editing_software_detected:Adobe Photoshop 25.0",
+        "confidence": 0.72,
+        "source_model": "metadata_analyzer"
+      },
+      {
+        "type": "metadata",
+        "value": {
+          "size_bytes": 1820400,
+          "filename": "edited_portrait.jpg",
+          "software": "Adobe Photoshop 25.0",
+          "gps_present": false
+        },
+        "confidence": 1.0,
+        "source_model": "metadata_analyzer"
+      }
+    ],
+    "analysis_errors": []
+  }
+]

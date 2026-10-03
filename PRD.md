@@ -431,4 +431,41 @@ Show the exact evidence
 ### Changes
 - Modified `image_analyzer.py` to extract bounding boxes from `InsightFace`.
 - Instead of just running deepfake detection on the full image, the pipeline now crops each detected face and runs the ViT model specifically on the face crop.
-- This ensures that pixel-level face-swap artifacts are preserved and not destroyed when the ViT model internally downscales the image to 224x224.
+- This ensures that pixel-level face-swap artifacts are preserved and not destroyed when the ViT model internally downscales the image to 224x224.
+
+---
+
+# 13. Update — Modular Participant 2 Reasoning Architecture & Dashboard (2026-10-03)
+
+**Implemented Participant 2 modular reasoning package, verdict logic, endpoints, and frontend visualizer.**
+
+### Backend Modular Reasoning Package (`backend/reasoning/`)
+- **`scorer.py`**: Computes transparent, explainable artifact-level manipulation scores independently from the final verdict. Does not average unrelated confidence values (e.g. face detection confidence vs EXIF confidence).
+- **`matcher.py`**: Entity & metadata matcher using stable `person_id` values and camera Make/Model signatures across artifacts.
+- **`contradictions.py`**: Detects single-artifact manipulation signals (Photoshop editing software, EXIF timestamp mismatch) and cross-artifact conflicts (e.g. same `person_id` in authentic vs synthetic media). Assigns severity ratings (`high`, `medium`, `low`).
+- **`graph.py`**: Generates relationship links suitable for Evidence Graph visualization.
+- **`engine.py`**: Main verdict orchestration module conforming strictly to `verdict.schema.json`. Requires meaningful cross-artifact evidence (shared entity conflicts / cross-media contradictions) for `COORDINATED_SYNTHETIC`. Multiple unrelated manipulated artifacts are classified as `MANIPULATED`.
+- **`llm_explainer.py`**: Generates bulleted reasoning factors and a comprehensive "Why?" free-text explanation synthesis. Supports optional Google Gemini API integration with local fallback.
+
+### Endpoints (`backend/routers/investigate.py`)
+- `POST /investigate/`: Accepts Evidence JSON array and returns full Verdict JSON.
+- `POST /investigate/mock`: Executes reasoning engine directly against `sample_evidence.json`.
+- `POST /investigate/fixture/{name}`: Executes reasoning engine on demo fixtures (`authentic`, `manipulated`, `insufficient`, `coordinated`).
+
+### Demo Fixtures (`mock_data/`)
+Deterministic fixtures demonstrating all 4 PRD verdicts:
+- `sample_evidence.json` → `COORDINATED_SYNTHETIC`
+- `sample_authentic.json` → `AUTHENTIC`
+- `sample_manipulated.json` → `MANIPULATED`
+- `sample_insufficient.json` → `INSUFFICIENT_EVIDENCE`
+
+### Trust Dashboard UI (`frontend/index.html`)
+- **SaaS Light Mode Aesthetics**: Redesigned UI featuring soft blue-gray overall background (`#EEF2F7`), clean white surface cards (`#FFFFFF`), deep navy typography (`#101828`), and muted periwinkle blue primary accents (`#5B6FD8`).
+- **Trust Verdict Banner**: Color-coded verdict badge, confidence score, and evidence coverage percentage.
+- **Artifact Manipulation Scores**: Independent per-artifact manipulation scores breakdown.
+- **Reasoning Explanation**: Renders natural language synthesis and key rationale factors.
+- **Contradiction Cards**: Renders flagged conflicts with severity badges (`HIGH`, `MEDIUM`, `LOW`).
+- **Cross-Artifact Evidence Graph**: Interactive visual network diagram mapping shared entity nodes (`SHARED PERSON: person_01`) to connected digital artifacts (`press_photo.jpg`, `rally_crowd.jpg`, `speech_clip.mp4`) with smooth Bezier edge curves and hover interaction highlights.
+
+
+

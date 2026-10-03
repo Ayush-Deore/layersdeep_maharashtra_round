@@ -1,0 +1,10 @@
+[
+  {
+    "artifact_id": "doc_unsupported_01",
+    "type": "document",
+    "filename": "corrupted_scan.bin",
+    "mime_type": "application/octet-stream",
+    "evidence": [],
+    "analysis_errors": ["Modality 'document' not fully supported yet — metadata only."]
+  }
+]
