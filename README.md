@@ -1,27 +1,39 @@
-# TrustLayer — AI Analysis Backend
+# TrustLayer — Multi-Modal Deepfake Analysis & Cross-Modal Reasoning Platform
 
-> **Participant 1** · Branch: `feature/ai-analysis`
+> **Participant 1 & Participant 2** · Branch: `anushka-work`
 
-Analyzes digital artifacts (images, videos, documents) and emits structured **Evidence JSON** for the cross-modal reasoning layer.
+TrustLayer analyzes digital artifacts (images, videos, documents) and evaluates whether a multi-artifact digital story is **AUTHENTIC, MANIPULATED, COORDINATED SYNTHETIC, or INSUFFICIENT EVIDENCE**.
 
 ---
 
 ## Architecture
 
 ```
-Upload (multipart)
+Upload (files or URL)
        ↓
 POST /analyze
        ↓
-   [per-file dispatcher]
+  ┌─────────────────────────────────────────┐
+  │  image: ViT deepfake + face detection   │
+  │  video: FFmpeg frames → image loop      │
+  │  metadata: EXIF, software & timestamps  │
+  └─────────────────────────────────────────┘
        ↓
-  ┌─────────────────────────────────────┐
-  │  image: deepfake_detection + face   │
-  │  video: FFmpeg frames → image loop  │
-  │  all:   metadata extraction         │
-  └─────────────────────────────────────┘
+Structured Evidence JSON
        ↓
-Evidence JSON  ──→  Participant 2 (reasoning + dashboard)
+POST /investigate
+       ↓
+  ┌───────────────────────────────────────────────────────────┐
+  │  Modular Reasoning Package (backend/reasoning/)           │
+  │  • scorer.py        Artifact manipulation scoring         │
+  │  • matcher.py       Entity & camera matching (person_id)  │
+  │  • contradictions.py Single-artifact & cross-media conflicts│
+  │  • graph.py         Evidence graph relationships          │
+  │  • engine.py        Verdict classification & orchestration│
+  │  • llm_explainer.py Rationale & "Why?" synthesis          │
+  └───────────────────────────────────────────────────────────┘
+       ↓
+Trust Verdict JSON & Interactive Dashboard
 ```
 
 ---
@@ -38,7 +50,7 @@ pip install -r requirements.txt
 
 ---
 
-## Run
+## Run Backend
 
 ```bash
 cd backend
@@ -53,75 +65,126 @@ API docs: http://localhost:8000/docs
 
 | Method | Path | Description |
 |--------|------|-------------|
-| `GET` | `/health` | Health check |
-| `POST` | `/analyze/` | Analyze one or more files |
-| `POST` | `/analyze/mock` | Return mock evidence (no upload needed) |
+| `GET` | `/health` | Backend status & model pre-warm status |
+| `POST` | `/analyze/` | Upload one or more image/video files for analysis |
+| `POST` | `/analyze/url` | Download and analyze an artifact from a public URL |
+| `POST` | `/analyze/mock` | Return realistic mock Evidence JSON |
+| `GET` | `/analyze/status` | Check AI model load state |
+| `POST` | `/investigate/` | Run cross-modal reasoning on Evidence JSON → returns Verdict JSON |
+| `POST` | `/investigate/mock` | Run reasoning directly on `sample_evidence.json` |
+| `POST` | `/investigate/fixture/{name}` | Run reasoning on demo fixtures: `authentic`, `manipulated`, `insufficient`, `coordinated` |
 
 ---
 
-## POST /analyze — Usage
+## Usage
+
+### 1. Extract Evidence (`POST /analyze/`)
 
 ```bash
-# Single image
-curl -X POST http://localhost:8000/analyze/ \
-  -F "files=@photo.jpg"
-
-# Multiple files
 curl -X POST http://localhost:8000/analyze/ \
   -F "files=@photo.jpg" \
   -F "files=@clip.mp4"
 ```
 
-### Response (Evidence JSON)
+### 2. Generate Trust Verdict (`POST /investigate/`)
+
+```bash
+curl -X POST http://localhost:8000/investigate/ \
+  -H "Content-Type: application/json" \
+  -d '@mock_data/sample_evidence.json'
+```
+
+### Verdict Response Example
 
 ```json
-[
-  {
-    "artifact_id": "img_a1b2c3",
-    "type": "image",
-    "filename": "photo.jpg",
-    "mime_type": "image/jpeg",
-    "evidence": [
-      { "type": "person", "value": { "face_index": 0, "age": 38 }, "confidence": 0.97, "source_model": "insightface/buffalo_l" },
-      { "type": "manipulation", "value": "synthetic_visual", "confidence": 0.88, "source_model": "dima806/deepfake_vs_real_image_detection" },
-      { "type": "metadata", "value": { "size_bytes": 2847219, "make": "Canon" }, "confidence": 1.0, "source_model": "metadata_analyzer" }
-    ],
-    "analysis_errors": []
-  }
-]
+{
+  "verdict": "COORDINATED_SYNTHETIC",
+  "confidence": 0.93,
+  "evidence_coverage": 1.0,
+  "reasons": [
+    "Entity 'person_01' recognized across 3 artifacts (img_a1b2c3, img_d4e5f6, vid_g7h8i9).",
+    "Coordinated synthetic campaign detected across 3 artifact(s) involving cross-artifact entity/media relationships."
+  ],
+  "contradictions": [
+    {
+      "artifact_a": "img_d4e5f6",
+      "artifact_b": "img_d4e5f6",
+      "description": "EXIF metadata reveals digital editing software (Adobe Photoshop 25.0) used on img_d4e5f6.",
+      "severity": "medium"
+    },
+    {
+      "artifact_a": "vid_g7h8i9",
+      "artifact_b": "img_d4e5f6",
+      "description": "Coordinated synthetic manipulation: Entity 'person_01' is manipulated across multiple media files (vid_g7h8i9, img_d4e5f6).",
+      "severity": "high"
+    }
+  ],
+  "relationships": [
+    {
+      "artifact_a": "img_a1b2c3",
+      "artifact_b": "img_d4e5f6",
+      "relation": "shared_person:person_01",
+      "confidence": 0.95
+    }
+  ],
+  "artifact_scores": {
+    "img_d4e5f6": {
+      "manipulation_score": 0.88,
+      "has_synthetic": true,
+      "explanation": "Synthetic visual manipulation detected with 88% confidence."
+    }
+  },
+  "llm_explanation": "TrustLayer has determined with 93% confidence that this set of artifacts represents a COORDINATED SYNTHETIC campaign..."
+}
 ```
 
 ---
 
-## Modalities
+## Modalities & AI Models
 
 | Modality | Status | Models |
 |----------|--------|--------|
-| Image deepfake detection | ✅ P0 | `dima806/deepfake_vs_real_image_detection` (ViT) |
-| Face detection & embedding | ✅ P0 | InsightFace `buffalo_l` |
-| Video (frame sampling) | ✅ P0 | FFmpeg → image analyzer |
-| Metadata (EXIF) | ✅ P0 | Pillow |
-| Speech transcription | ⏳ P1 | Whisper |
-| Speaker embeddings | ⏳ P1 | ECAPA-TDNN |
-| Synthetic audio | ⏳ P1 | Wav2Vec2 |
-| OCR | ⏳ P1 | PaddleOCR |
+| Image deepfake detection | ✅ Active | `dima806/deepfake_vs_real_image_detection` (ViT) |
+| Face detection & person_id | ✅ Active | InsightFace `buffalo_l` + session `FaceRegistry` |
+| Face-crop deepfake scan | ✅ Active | Bounding-box crop → ViT deepfake scan |
+| Video frame sampling | ✅ Active | FFmpeg (max 12 frames) → image analyzer |
+| Metadata & EXIF analysis | ✅ Active | Pillow EXIF, software & datetime mismatch detection |
+| Cross-modal reasoning | ✅ Active | Modular `backend/reasoning/` (scorer, matcher, contradictions, graph, engine) |
+| Explanation synthesis | ✅ Active | Local fallback engine & optional Gemini API |
+
+---
+
+## Demo Fixtures
+
+Deterministic fixtures available for demonstrating all 4 verdicts:
+- `sample_evidence.json` → `COORDINATED_SYNTHETIC`
+- `sample_authentic.json` → `AUTHENTIC`
+- `sample_manipulated.json` → `MANIPULATED`
+- `sample_insufficient.json` → `INSUFFICIENT_EVIDENCE`
 
 ---
 
 ## Schemas
 
-Shared contract lives in `/schemas/`:
-- `evidence.schema.json` — output of this repo
-- `verdict.schema.json` — input to Participant 2
-
-**Do not break these schemas without coordinating with Participant 2.**
+Shared data contracts in `/schemas/`:
+- `evidence.schema.json` — output of `/analyze/`
+- `verdict.schema.json` — output of `/investigate/`
 
 ---
 
-## For Participant 2 (Mock Integration)
+## Frontend Trust Dashboard
 
-Use `POST /analyze/mock` to get realistic Evidence JSON without needing real files.
-Or directly load `mock_data/sample_evidence.json`.
+Open `frontend/index.html` in any web browser (or via HTTP server at `http://localhost:5500`) to access the redesigned SaaS UI dashboard:
+- **Visual Design**: Premium SaaS AI aesthetics with soft blue-gray background (`#EEF2F7`), clean white surfaces (`#FFFFFF`), navy typography (`#101828`), and muted periwinkle blue primary accents (`#5B6FD8`).
+- **Batch Upload & URL Analysis**: Drag-and-drop file upload zone and public URL input tabs.
+- **Model Status Indicator**: Real-time polling of backend `/health` showing model readiness.
+- **Trust Verdict Banner**: Prominent verdict badge (`AUTHENTIC`, `MANIPULATED`, `COORDINATED_SYNTHETIC`, `INSUFFICIENT_EVIDENCE`), confidence score, and evidence coverage metrics.
+- **Artifact Manipulation Scores**: Independent per-artifact manipulation scores breakdown.
+- **Reasoning & "Why?" Explanation**: Detailed natural language synthesis and rationale factors.
+- **Contradiction Cards**: Severity badges (`HIGH`, `MEDIUM`, `LOW`) with artifact conflict descriptions.
+- **Cross-Artifact Evidence Graph**: Interactive network graph widget displaying shared entities (e.g. `SHARED PERSON: person_01`) at the apex with smooth Bezier curve connections to individual artifact cards (`press_photo.jpg`, `rally_crowd.jpg`, `speech_clip.mp4`), featuring hover highlight triggers for connected nodes and relationship links.
+- **Evidence Cards & Raw JSON**: Fine-grained manipulation scores, face badges, EXIF accordions, and dark-themed raw JSON toggle.
+
 
 ---
 
@@ -129,17 +192,36 @@ Or directly load `mock_data/sample_evidence.json`.
 
 ```
 backend/
-├── main.py                  # FastAPI app
+├── main.py                  # FastAPI app (warmup & router setup)
 ├── requirements.txt
 ├── routers/
-│   └── analyze.py           # POST /analyze
+│   ├── analyze.py           # POST /analyze/, /analyze/url, /analyze/mock
+│   └── investigate.py       # POST /investigate/, /investigate/mock, /investigate/fixture/{name}
+├── reasoning/
+│   ├── __init__.py
+│   ├── scorer.py            # Artifact manipulation scoring
+│   ├── matcher.py           # Entity & metadata matching (person_id)
+│   ├── contradictions.py    # Single-artifact & cross-media conflict detection
+│   ├── graph.py             # Evidence graph relationship builder
+│   ├── engine.py            # Main verdict decision & orchestration
+│   └── llm_explainer.py     # Rationale & "Why?" synthesis
 ├── analyzers/
-│   ├── image_analyzer.py    # ViT deepfake + InsightFace
-│   ├── video_analyzer.py    # FFmpeg frames → image analyzer
-│   └── metadata_analyzer.py # EXIF + file stats
+│   ├── image_analyzer.py    # ViT deepfake + InsightFace + face crops
+│   ├── video_analyzer.py    # FFmpeg frame sampling → image analyzer loop
+│   └── metadata_analyzer.py # EXIF, software & datetime mismatch
 ├── models/
-│   └── loader.py            # Lazy singleton model loading
+│   └── loader.py            # Lazy singleton model loader
 └── utils/
-    └── file_utils.py        # MIME detection, artifact IDs
+    ├── face_registry.py     # Cosine similarity person_id registry
+    └── file_utils.py        # MIME detection & artifact IDs
+frontend/
+└── index.html               # Single-file HTML/CSS/JS Trust Dashboard
+mock_data/
+├── sample_evidence.json     # Coordinated synthetic sample dataset
+├── sample_authentic.json    # Authentic sample dataset
+├── sample_manipulated.json  # Manipulated sample dataset
+└── sample_insufficient.json # Insufficient evidence sample dataset
+schemas/
+├── evidence.schema.json     # Output contract for analysis
+└── verdict.schema.json      # Output contract for reasoning
 ```
-# layersdeep_maharashtra_round

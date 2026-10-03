@@ -7,30 +7,39 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
-    /* ── Reset & Tokens ───────────────────────────────────────────────── */
+    /* ── Reset & Enterprise Tokens ───────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:          #0b0d14;
-      --surface:     #12151f;
-      --surface2:    #1a1e2e;
-      --border:      rgba(255,255,255,0.07);
-      --border-hi:   rgba(255,255,255,0.14);
-      --accent:      #6c63ff;
-      --accent-glow: rgba(108,99,255,0.25);
-      --cyan:        #22d3ee;
-      --green:       #4ade80;
-      --red:         #f87171;
-      --amber:       #fbbf24;
-      --text:        #e2e8f0;
-      --muted:       #64748b;
-      --radius:      12px;
-      --shadow:      0 8px 32px rgba(0,0,0,0.5);
+      --bg:             #F3F6FA;
+      --surface:        #FFFFFF;
+      --surface-muted:  #F8FAFC;
+      --border:         #E2E8F0;
+      --border-hi:      #CBD5E1;
+      --navy:           #0F172A;
+      --text:           #334155;
+      --muted:          #64748B;
+      --primary:        #4F46E5;
+      --primary-hover:  #4338CA;
+      --primary-light:  #EEF2FF;
+      --primary-border: #C7D2FE;
+      --green:          #16A34A;
+      --green-bg:       #F0FDF4;
+      --green-border:   #A7F3D0;
+      --amber:          #D97706;
+      --amber-bg:       #FFFBEB;
+      --amber-border:   #FDE047;
+      --red:            #DC2626;
+      --red-bg:         #FEF2F2;
+      --red-border:     #FECACA;
+      --radius:         14px;
+      --shadow:         0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.03);
+      --shadow-md:      0 4px 12px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
     }
 
     html, body {
       height: 100%;
-      font-family: 'Inter', sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       background: var(--bg);
       color: var(--text);
       font-size: 14px;
@@ -53,6 +62,7 @@
       padding: 0 24px;
       background: var(--surface);
       border-bottom: 1px solid var(--border);
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
       position: relative;
       z-index: 10;
     }
@@ -62,24 +72,27 @@
       align-items: center;
       gap: 10px;
       font-weight: 700;
-      font-size: 16px;
+      font-size: 15px;
+      color: var(--navy);
       letter-spacing: -0.3px;
     }
     .logo-icon {
-      width: 28px; height: 28px;
-      background: linear-gradient(135deg, var(--accent), var(--cyan));
+      width: 26px; height: 26px;
+      background: linear-gradient(135deg, var(--primary), #818CF8);
+      color: #FFF;
       border-radius: 7px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 14px;
+      font-size: 13px;
+      box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2);
     }
     .logo-badge {
       font-size: 10px;
-      font-weight: 500;
-      color: var(--muted);
-      background: var(--surface2);
+      font-weight: 600;
+      color: var(--primary);
+      background: var(--primary-light);
       padding: 2px 8px;
       border-radius: 20px;
-      border: 1px solid var(--border);
+      border: 1px solid var(--primary-border);
       letter-spacing: 0.5px;
       text-transform: uppercase;
     }
@@ -90,25 +103,26 @@
       gap: 8px;
       font-size: 12px;
       color: var(--muted);
+      font-weight: 500;
     }
     .status-dot {
-      width: 7px; height: 7px;
+      width: 8px; height: 8px;
       border-radius: 50%;
       background: var(--muted);
       transition: background 0.4s;
     }
-    .status-dot.ok    { background: var(--green); box-shadow: 0 0 6px var(--green); }
-    .status-dot.warn  { background: var(--amber); box-shadow: 0 0 6px var(--amber); }
-    .status-dot.error { background: var(--red);   box-shadow: 0 0 6px var(--red); }
+    .status-dot.ok    { background: var(--green); box-shadow: 0 0 6px rgba(22, 163, 74, 0.3); }
+    .status-dot.warn  { background: var(--amber); box-shadow: 0 0 6px rgba(217, 119, 6, 0.3); }
+    .status-dot.error { background: var(--red);   box-shadow: 0 0 6px rgba(220, 38, 38, 0.3); }
 
-    /* ── Main split ───────────────────────────────────────────────────── */
+    /* ── Main Split ───────────────────────────────────────────────────── */
     .main {
       display: grid;
-      grid-template-columns: 420px 1fr;
+      grid-template-columns: 380px 1fr;
       overflow: hidden;
     }
 
-    /* ── Left panel ───────────────────────────────────────────────────── */
+    /* ── Left Sidebar ─────────────────────────────────────────────────── */
     .left {
       background: var(--surface);
       border-right: 1px solid var(--border);
@@ -119,10 +133,16 @@
       overflow-y: auto;
     }
 
+    .sidebar-section {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
     h2.panel-title {
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 0.5px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
       text-transform: uppercase;
       color: var(--muted);
     }
@@ -130,18 +150,19 @@
     /* ── Tabs ─────────────────────────────────────────────────────────── */
     .tabs {
       display: flex;
-      background: var(--surface2);
+      background: #F1F5F9;
       border-radius: 9px;
       padding: 3px;
       gap: 3px;
+      border: 1px solid #E2E8F0;
     }
     .tab {
       flex: 1;
       text-align: center;
-      padding: 7px 0;
+      padding: 7.5px 0;
       border-radius: 7px;
       cursor: pointer;
-      font-size: 13px;
+      font-size: 12.5px;
       font-weight: 500;
       color: var(--muted);
       transition: all 0.2s;
@@ -149,29 +170,29 @@
     }
     .tab.active {
       background: var(--surface);
-      color: var(--text);
-      box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+      color: var(--navy);
+      font-weight: 600;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
     }
-    .tab:not(.active):hover { color: var(--text); }
+    .tab:not(.active):hover { color: var(--navy); }
 
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
 
-    /* ── Drop zone ────────────────────────────────────────────────────── */
+    /* ── Dropzone ─────────────────────────────────────────────────────── */
     .dropzone {
-      border: 2px dashed var(--border-hi);
+      border: 2px dashed #CBD5E1;
       border-radius: var(--radius);
-      padding: 36px 20px;
+      padding: 28px 16px;
       text-align: center;
       cursor: pointer;
-      transition: all 0.25s;
-      background: var(--surface2);
+      transition: all 0.2s;
+      background: var(--surface-muted);
       position: relative;
     }
     .dropzone:hover, .dropzone.drag-over {
-      border-color: var(--accent);
-      background: rgba(108,99,255,0.07);
-      box-shadow: 0 0 0 4px var(--accent-glow);
+      border-color: var(--primary);
+      background: var(--primary-light);
     }
     .dropzone input[type=file] {
       position: absolute;
@@ -181,32 +202,33 @@
       width: 100%;
       height: 100%;
     }
-    .drop-icon { font-size: 36px; margin-bottom: 10px; }
-    .drop-title { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
-    .drop-sub { font-size: 12px; color: var(--muted); }
+    .drop-icon { font-size: 28px; margin-bottom: 6px; }
+    .drop-title { font-size: 13.5px; font-weight: 600; color: var(--navy); margin-bottom: 2px; }
+    .drop-sub { font-size: 11.5px; color: var(--muted); }
 
-    /* File list */
+    /* File List */
     #file-list {
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      margin-top: 4px;
+      gap: 6px;
+      margin-top: 6px;
     }
     .file-chip {
       display: flex;
       align-items: center;
-      gap: 10px;
-      background: var(--surface2);
+      gap: 8px;
+      background: var(--surface-muted);
       border: 1px solid var(--border);
       border-radius: 8px;
       padding: 8px 12px;
       font-size: 12px;
       animation: fadeIn 0.2s ease;
     }
-    .file-chip-icon { font-size: 18px; }
+    .file-chip-icon { font-size: 16px; }
     .file-chip-name {
       flex: 1;
       font-weight: 500;
+      color: var(--navy);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -221,83 +243,109 @@
     }
     .file-chip-remove:hover { color: var(--red); }
 
-    /* ── URL tab ──────────────────────────────────────────────────────── */
-    .url-form { display: flex; flex-direction: column; gap: 12px; }
-    .url-form label { font-size: 12px; color: var(--muted); font-weight: 500; }
+    /* ── URL Form ─────────────────────────────────────────────────────── */
+    .url-form { display: flex; flex-direction: column; gap: 10px; }
+    .url-form label { font-size: 12px; color: var(--navy); font-weight: 600; }
     .url-form input[type=url] {
       width: 100%;
-      background: var(--surface2);
+      background: var(--surface-muted);
       border: 1px solid var(--border-hi);
       border-radius: 8px;
-      padding: 10px 14px;
-      color: var(--text);
+      padding: 9px 12px;
+      color: var(--navy);
       font-family: 'JetBrains Mono', monospace;
       font-size: 12px;
       outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      transition: border-color 0.2s;
     }
     .url-form input[type=url]:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px var(--accent-glow);
+      border-color: var(--primary);
     }
     .url-form input[type=url]::placeholder { color: var(--muted); }
 
-    /* ── API base URL ─────────────────────────────────────────────────── */
+    /* ── API Base Config ──────────────────────────────────────────────── */
     .api-config {
-      background: var(--surface2);
+      background: var(--surface-muted);
       border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 14px 16px;
+      border-radius: 10px;
+      padding: 12px 14px;
     }
-    .api-config label { font-size: 11px; color: var(--muted); font-weight: 600; letter-spacing: 0.4px; text-transform: uppercase; }
+    .api-config label { font-size: 10.5px; color: var(--muted); font-weight: 700; letter-spacing: 0.4px; text-transform: uppercase; }
     .api-config input {
       width: 100%;
-      margin-top: 6px;
+      margin-top: 4px;
       background: transparent;
       border: none;
       border-bottom: 1px solid var(--border-hi);
-      color: var(--cyan);
+      color: var(--primary);
       font-family: 'JetBrains Mono', monospace;
       font-size: 12px;
-      padding: 4px 0;
+      font-weight: 600;
+      padding: 3px 0;
       outline: none;
     }
 
-    /* ── Buttons ──────────────────────────────────────────────────────── */
+    /* ── Actions Group & Buttons ──────────────────────────────────────── */
+    .actions-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
     .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      padding: 11px 20px;
-      border-radius: 9px;
-      font-size: 14px;
+      padding: 11px 18px;
+      border-radius: 10px;
+      font-size: 13.5px;
       font-weight: 600;
       cursor: pointer;
       border: none;
       transition: all 0.2s;
       width: 100%;
     }
+
+    /* Primary CTA: Run Trust Investigation */
+    .btn-investigate, #investigate-btn {
+      background: var(--navy) !important;
+      color: #FFFFFF !important;
+      border: none !important;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.15);
+    }
+    .btn-investigate:hover:not(:disabled), #investigate-btn:hover:not(:disabled) {
+      background: #1E293B !important;
+      transform: translateY(-1px);
+    }
+
+    /* Secondary CTA: Analyze */
     .btn-primary {
-      background: linear-gradient(135deg, var(--accent), #8b5cf6);
-      color: #fff;
-      box-shadow: 0 4px 16px var(--accent-glow);
+      background: var(--primary-light);
+      color: var(--primary);
+      border: 1px solid var(--primary-border);
     }
     .btn-primary:hover:not(:disabled) {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 24px var(--accent-glow);
+      background: #E0E7FF;
+      border-color: #A5B4FC;
     }
     .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+    /* Ghost buttons */
     .btn-ghost {
-      background: var(--surface2);
-      border: 1px solid var(--border-hi);
-      color: var(--text);
+      background: var(--surface-muted);
+      border: 1px solid var(--border);
+      color: var(--navy);
     }
-    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-ghost:hover {
+      background: var(--primary-light);
+      border-color: var(--primary-border);
+      color: var(--primary);
+    }
 
     /* ── Spinner ──────────────────────────────────────────────────────── */
     .spinner {
-      width: 16px; height: 16px;
+      width: 15px; height: 15px;
       border: 2px solid rgba(255,255,255,0.3);
       border-top-color: #fff;
       border-radius: 50%;
@@ -307,16 +355,27 @@
     .spinner.active { display: block; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ── Right panel ──────────────────────────────────────────────────── */
+    /* ── Right Panel ──────────────────────────────────────────────────── */
     .right {
+      background: var(--bg);
       overflow-y: auto;
-      padding: 24px;
+      padding: 28px 32px;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 24px;
     }
 
-    /* ── Empty state ──────────────────────────────────────────────────── */
+    /* Content Max-Width Wrapper */
+    .content-max-width {
+      max-width: 1000px;
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* ── Empty State ──────────────────────────────────────────────────── */
     #empty-state {
       flex: 1;
       display: flex;
@@ -326,35 +385,243 @@
       color: var(--muted);
       text-align: center;
       gap: 12px;
+      padding: 60px 20px;
     }
-    .empty-icon { font-size: 48px; opacity: 0.4; }
-    .empty-title { font-size: 16px; font-weight: 600; color: var(--text); opacity: 0.5; }
-    .empty-sub { font-size: 13px; max-width: 300px; }
+    .empty-icon { font-size: 40px; opacity: 0.6; }
+    .empty-title { font-size: 15px; font-weight: 600; color: var(--navy); }
+    .empty-sub { font-size: 13px; max-width: 320px; color: var(--muted); }
 
-    /* ── Artifact card ────────────────────────────────────────────────── */
+    /* ── Verdict Hero Card (Premium Refinement) ───────────────────────── */
+    .verdict-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      box-shadow: var(--shadow-md);
+      animation: fadeIn 0.4s ease;
+    }
+    .verdict-card.AUTHENTIC { border-left: 5px solid var(--green); }
+    .verdict-card.MANIPULATED { border-left: 5px solid var(--amber); }
+    .verdict-card.COORDINATED_SYNTHETIC { border-left: 5px solid var(--red); }
+    .verdict-card.INSUFFICIENT_EVIDENCE { border-left: 5px solid var(--muted); }
+
+    .verdict-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .verdict-badge-large {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 16px;
+      border-radius: 30px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+    }
+    .verdict-badge-large.AUTHENTIC { background: var(--green-bg); color: #15803D; border: 1px solid var(--green-border); }
+    .verdict-badge-large.MANIPULATED { background: var(--amber-bg); color: #B45309; border: 1px solid var(--amber-border); }
+    .verdict-badge-large.COORDINATED_SYNTHETIC { background: var(--red-bg); color: #B91C1C; border: 1px solid var(--red-border); }
+    .verdict-badge-large.INSUFFICIENT_EVIDENCE { background: #F1F5F9; color: #475467; border: 1px solid #CBD5E1; }
+
+    .verdict-metrics-row {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+    .v-metric { text-align: right; }
+    .v-metric-num { font-size: 24px; font-weight: 800; color: var(--navy); line-height: 1.1; }
+    .v-metric-label { font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; margin-top: 2px; }
+
+    /* ── Reasoning & "Why?" Explanation Panel ─────────────────────────── */
+    .why-section {
+      background: var(--surface-muted);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 16px;
+    }
+    .why-title {
+      font-size: 11.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--primary);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .why-text {
+      font-size: 13.5px;
+      color: var(--navy);
+      white-space: pre-wrap;
+      line-height: 1.65;
+    }
+
+    /* ── Contradictions Section ───────────────────────────────────────── */
+    .contradiction-item {
+      background: var(--red-bg);
+      border: 1px solid var(--red-border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-top: 8px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .sev-badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+    .sev-badge.high { background: var(--red); color: #fff; }
+    .sev-badge.medium { background: var(--amber); color: #fff; }
+    .sev-badge.low { background: var(--primary); color: #fff; }
+
+    /* ── Evidence Graph ──────────────────────────────────────────────── */
+    .net-graph-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px 24px;
+      margin-top: 18px;
+      box-shadow: var(--shadow);
+    }
+    .net-graph-viewport {
+      position: relative;
+      width: 100%;
+      height: 290px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .net-graph-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    .graph-edge-path {
+      transition: stroke 0.25s ease, stroke-width 0.25s ease, opacity 0.25s ease;
+    }
+
+    .net-node {
+      transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease, border-color 0.25s ease, opacity 0.25s ease;
+      user-select: none;
+    }
+    .net-node-artifact {
+      background: var(--surface);
+      border: 1px solid var(--border-hi);
+      border-radius: 12px;
+      padding: 10px 16px;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+      min-width: 140px;
+      text-align: center;
+    }
+    .net-node-artifact:hover, .net-node-artifact.highlighted {
+      border-color: var(--primary);
+      box-shadow: 0 6px 18px -2px rgba(79, 70, 229, 0.18);
+      transform: translate(-50%, -54%) scale(1.04) !important;
+      z-index: 5;
+    }
+
+    .net-node-entity {
+      background: var(--surface);
+      border: 2px solid var(--primary);
+      border-radius: 30px;
+      padding: 8px 20px;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.12);
+      text-align: center;
+    }
+    .net-node-entity:hover, .net-node-entity.highlighted {
+      background: var(--primary-light);
+      box-shadow: 0 6px 20px rgba(79, 70, 229, 0.22);
+      transform: translate(-50%, -54%) scale(1.05) !important;
+      z-index: 5;
+    }
+    .entity-badge-top {
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.6px;
+      color: var(--primary);
+      text-transform: uppercase;
+      line-height: 1;
+    }
+    .entity-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 2px;
+    }
+    .entity-dot {
+      color: var(--primary);
+      font-size: 10px;
+    }
+
+    /* ── Summary Bar ──────────────────────────────────────────────────── */
+    #summary-bar {
+      display: none;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+      box-shadow: var(--shadow);
+    }
+    .summary-stat { text-align: center; }
+    .summary-num { font-size: 22px; font-weight: 700; color: var(--navy); }
+    .summary-label { font-size: 11px; color: var(--muted); margin-top: 2px; font-weight: 500; }
+    .summary-divider {
+      width: 1px;
+      height: 32px;
+      background: var(--border);
+    }
+
+    /* ── Artifact Cards ───────────────────────────────────────────────── */
     .artifact-card {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 16px;
+      border-radius: var(--radius);
       overflow: hidden;
+      box-shadow: var(--shadow);
       animation: fadeIn 0.3s ease;
-      transition: border-color 0.2s;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
-    .artifact-card:hover { border-color: var(--border-hi); }
+    .artifact-card:hover { border-color: var(--border-hi); box-shadow: var(--shadow-md); }
 
     .artifact-header {
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 16px 20px;
-      background: var(--surface2);
+      padding: 14px 20px;
+      background: var(--surface-muted);
       border-bottom: 1px solid var(--border);
     }
-    .artifact-type-icon { font-size: 22px; }
+    .artifact-type-icon { font-size: 20px; }
     .artifact-name {
       flex: 1;
       font-weight: 600;
       font-size: 14px;
+      color: var(--navy);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -362,23 +629,24 @@
     .artifact-id {
       font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
-      color: var(--muted);
-      background: var(--bg);
+      font-weight: 600;
+      color: var(--primary);
+      background: var(--primary-light);
       padding: 3px 8px;
-      border-radius: 5px;
+      border-radius: 6px;
+      border: 1px solid var(--primary-border);
     }
     .artifact-mime {
       font-size: 11px;
       color: var(--muted);
     }
 
-    .artifact-body { padding: 16px 20px; display: flex; flex-direction: column; gap: 14px; }
+    .artifact-body { padding: 18px 20px; display: flex; flex-direction: column; gap: 16px; }
 
-    /* ── Evidence section header ──────────────────────────────────────── */
     .ev-section-title {
       font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.6px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
       text-transform: uppercase;
       color: var(--muted);
       margin-bottom: 8px;
@@ -387,19 +655,20 @@
       gap: 6px;
     }
     .ev-count-badge {
-      background: var(--surface2);
+      background: var(--surface-muted);
       border: 1px solid var(--border);
       border-radius: 10px;
       padding: 1px 7px;
       font-size: 10px;
+      color: var(--navy);
+      font-weight: 600;
     }
 
-    /* ── Manipulation pill ────────────────────────────────────────────── */
     .manip-row {
       display: flex;
       align-items: center;
       gap: 12px;
-      background: var(--surface2);
+      background: var(--surface-muted);
       border-radius: 10px;
       padding: 12px 14px;
       border: 1px solid var(--border);
@@ -409,13 +678,14 @@
     .manip-value {
       font-family: 'JetBrains Mono', monospace;
       font-size: 12px;
-      font-weight: 500;
+      font-weight: 600;
+      color: var(--navy);
       margin-bottom: 6px;
     }
     .manip-bar-wrap {
-      background: rgba(255,255,255,0.06);
+      background: #E2E8F0;
       border-radius: 4px;
-      height: 5px;
+      height: 6px;
       overflow: hidden;
     }
     .manip-bar {
@@ -437,34 +707,32 @@
       font-family: 'JetBrains Mono', monospace;
     }
 
-    /* ── Person badges ────────────────────────────────────────────────── */
     .persons-grid {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
     }
     .person-card {
-      background: var(--surface2);
+      background: var(--surface-muted);
       border: 1px solid var(--border);
       border-radius: 10px;
       padding: 10px 14px;
       min-width: 120px;
       transition: border-color 0.2s;
     }
-    .person-card:hover { border-color: var(--accent); }
+    .person-card:hover { border-color: var(--primary); }
     .person-id {
       font-family: 'JetBrains Mono', monospace;
       font-size: 12px;
-      font-weight: 600;
-      color: var(--accent);
+      font-weight: 700;
+      color: var(--primary);
       margin-bottom: 4px;
     }
     .person-attrs { font-size: 11px; color: var(--muted); line-height: 1.8; }
     .person-conf { font-size: 10px; color: var(--muted); margin-top: 4px; }
 
-    /* ── Metadata accordion ───────────────────────────────────────────── */
     .meta-accordion {
-      background: var(--surface2);
+      background: var(--surface-muted);
       border: 1px solid var(--border);
       border-radius: 10px;
       overflow: hidden;
@@ -477,9 +745,10 @@
       cursor: pointer;
       user-select: none;
       font-size: 12px;
-      font-weight: 500;
+      font-weight: 600;
+      color: var(--navy);
     }
-    .meta-accordion-header:hover { background: rgba(255,255,255,0.04); }
+    .meta-accordion-header:hover { background: var(--primary-light); }
     .meta-chevron {
       font-size: 10px;
       color: var(--muted);
@@ -490,6 +759,7 @@
       display: none;
       padding: 0 14px 12px;
       border-top: 1px solid var(--border);
+      background: var(--surface);
     }
     .meta-accordion.open .meta-accordion-body { display: block; }
     .meta-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
@@ -506,13 +776,13 @@
     }
     .meta-table td:last-child {
       font-family: 'JetBrains Mono', monospace;
+      color: var(--navy);
       word-break: break-all;
     }
 
-    /* ── Errors ───────────────────────────────────────────────────────── */
     .errors-box {
-      background: rgba(248,113,113,0.08);
-      border: 1px solid rgba(248,113,113,0.2);
+      background: var(--red-bg);
+      border: 1px solid var(--red-border);
       border-radius: 8px;
       padding: 10px 14px;
       font-size: 12px;
@@ -521,19 +791,19 @@
       line-height: 1.8;
     }
 
-    /* ── Raw JSON toggle ──────────────────────────────────────────────── */
     .raw-json-toggle {
       font-size: 11px;
-      color: var(--muted);
+      color: var(--primary);
+      font-weight: 600;
       cursor: pointer;
       text-align: right;
       user-select: none;
       transition: color 0.2s;
     }
-    .raw-json-toggle:hover { color: var(--cyan); }
+    .raw-json-toggle:hover { color: var(--primary-hover); }
     .raw-json {
       display: none;
-      background: var(--bg);
+      background: var(--navy);
       border: 1px solid var(--border);
       border-radius: 8px;
       padding: 14px;
@@ -541,46 +811,24 @@
       font-size: 11px;
       white-space: pre-wrap;
       word-break: break-all;
-      color: var(--cyan);
+      color: #38BDF8;
       max-height: 300px;
       overflow-y: auto;
       margin-top: 6px;
     }
 
-    /* ── Global error banner ──────────────────────────────────────────── */
     #error-banner {
       display: none;
-      background: rgba(248,113,113,0.1);
-      border: 1px solid rgba(248,113,113,0.3);
+      background: var(--red-bg);
+      border: 1px solid var(--red-border);
       border-radius: 10px;
       padding: 12px 16px;
       font-size: 13px;
       color: var(--red);
+      font-weight: 500;
       animation: fadeIn 0.3s;
     }
 
-    /* ── Summary bar ──────────────────────────────────────────────────── */
-    #summary-bar {
-      display: none;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 14px 20px;
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
-    .summary-stat { text-align: center; }
-    .summary-num { font-size: 22px; font-weight: 700; color: var(--text); }
-    .summary-label { font-size: 11px; color: var(--muted); margin-top: 2px; }
-    .summary-divider {
-      width: 1px;
-      height: 32px;
-      background: var(--border);
-    }
-
-    /* ── Animations ───────────────────────────────────────────────────── */
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(8px); }
       to   { opacity: 1; transform: translateY(0); }
@@ -589,9 +837,10 @@
     /* ── Scrollbars ───────────────────────────────────────────────────── */
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
     ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
   </style>
+
 </head>
 <body>
 
@@ -616,81 +865,103 @@
     <!-- Left: Input ──────────────────────────────────────────────────────── -->
     <aside class="left">
 
-      <h2 class="panel-title">Input</h2>
+      <div class="sidebar-section">
+        <h2 class="panel-title">Input</h2>
 
-      <!-- Tabs -->
-      <div class="tabs">
-        <div class="tab active" id="tab-file" onclick="switchTab('file')">📁 File Upload</div>
-        <div class="tab" id="tab-url" onclick="switchTab('url')">🔗 URL</div>
-      </div>
-
-      <!-- File tab -->
-      <div class="tab-panel active" id="panel-file">
-        <div class="dropzone" id="dropzone"
-             ondragover="handleDragOver(event)"
-             ondragleave="handleDragLeave(event)"
-             ondrop="handleDrop(event)">
-          <input type="file" id="file-input" multiple
-                 accept="image/*,video/*"
-                 onchange="handleFileInput(event)" />
-          <div class="drop-icon">🖼️</div>
-          <div class="drop-title">Drop files here</div>
-          <div class="drop-sub">or click to browse<br/>Images &amp; videos (JPG, PNG, MP4, MOV…)</div>
+        <!-- Tabs -->
+        <div class="tabs">
+          <div class="tab active" id="tab-file" onclick="switchTab('file')">📁 File Upload</div>
+          <div class="tab" id="tab-url" onclick="switchTab('url')">🔗 URL</div>
         </div>
-        <div id="file-list"></div>
-      </div>
 
-      <!-- URL tab -->
-      <div class="tab-panel" id="panel-url">
-        <div class="url-form">
-          <label for="url-input">Public image or video URL</label>
-          <input type="url" id="url-input"
-                 placeholder="https://example.com/photo.jpg"
-                 autocomplete="off" />
-          <div style="font-size:11px;color:var(--muted)">
-            Direct link to JPG, PNG, MP4, MOV, etc.
+        <!-- File tab -->
+        <div class="tab-panel active" id="panel-file">
+          <div class="dropzone" id="dropzone"
+               ondragover="handleDragOver(event)"
+               ondragleave="handleDragLeave(event)"
+               ondrop="handleDrop(event)">
+            <input type="file" id="file-input" multiple
+                   accept="image/*,video/*"
+                   onchange="handleFileInput(event)" />
+            <div class="drop-icon">🖼️</div>
+            <div class="drop-title">Drop files here</div>
+            <div class="drop-sub">or click to browse<br/>Select multiple images or videos (JPG, PNG, MP4, MOV…)</div>
+          </div>
+          <div id="file-list"></div>
+        </div>
+
+        <!-- URL tab -->
+        <div class="tab-panel" id="panel-url">
+          <div class="url-form">
+            <label for="url-input">Public image or video URL</label>
+            <input type="url" id="url-input"
+                   placeholder="https://example.com/photo.jpg"
+                   autocomplete="off" />
+            <div style="font-size:11px;color:var(--muted)">
+              Direct link to JPG, PNG, MP4, MOV, etc.
+            </div>
           </div>
         </div>
       </div>
 
       <!-- API config -->
-      <div class="api-config">
-        <label>API Base URL</label>
-        <input type="text" id="api-base" value="http://localhost:8000" />
+      <div class="sidebar-section">
+        <h2 class="panel-title">Configuration</h2>
+        <div class="api-config">
+          <label>API Base URL</label>
+          <input type="text" id="api-base" value="http://localhost:8000" />
+        </div>
       </div>
 
       <!-- Actions -->
-      <button class="btn btn-primary" id="analyze-btn" onclick="runAnalysis()" disabled>
-        <span class="spinner" id="btn-spinner"></span>
-        <span id="btn-label">🔎 Analyze</span>
-      </button>
-      <button class="btn btn-ghost" onclick="loadMock()">🗂 Load Mock Evidence</button>
-      <button class="btn btn-ghost" onclick="clearResults()">✕ Clear</button>
+      <div class="sidebar-section">
+        <h2 class="panel-title">Actions</h2>
+        <div class="actions-group">
+          <button class="btn btn-investigate" id="investigate-btn" onclick="runInvestigation()">
+            <span class="spinner" id="inv-spinner"></span>
+            <span id="inv-label">🛡️ Run Trust Investigation</span>
+          </button>
+          <button class="btn btn-primary" id="analyze-btn" onclick="runAnalysis()" disabled>
+            <span class="spinner" id="btn-spinner"></span>
+            <span id="btn-label">🔎 Analyze &amp; Extract Evidence</span>
+          </button>
+          <button class="btn btn-ghost" onclick="loadMock()">🗂 Load Mock Evidence</button>
+          <button class="btn btn-ghost" onclick="clearResults()">✕ Clear</button>
+        </div>
+      </div>
 
     </aside>
 
     <!-- Right: Results ───────────────────────────────────────────────────── -->
     <main class="right" id="results-panel">
+      <div class="content-max-width">
 
-      <div id="error-banner"></div>
+        <div id="error-banner"></div>
 
-      <div id="empty-state">
-        <div class="empty-icon">📡</div>
-        <div class="empty-title">No results yet</div>
-        <div class="empty-sub">Upload files or paste a URL, then click Analyze to see Evidence JSON visualized here.</div>
+        <div id="empty-state">
+          <div class="empty-icon">📡</div>
+          <div class="empty-title">No results yet</div>
+          <div class="empty-sub">Upload files or paste a URL, click Analyze to extract evidence, then run Cross-Modal Investigation.</div>
+        </div>
+
+        <!-- Verdict Banner & Cross-Modal Dashboard -->
+        <div id="verdict-container" style="display:none"></div>
+
+        <div id="summary-bar" style="display:none"></div>
+        <div id="artifacts-container"></div>
+
       </div>
-
-      <div id="summary-bar" style="display:none"></div>
-      <div id="artifacts-container"></div>
-
     </main>
+
   </div>
 </div>
+
 
 <script>
 // ── State ──────────────────────────────────────────────────────────────────
 let selectedFiles = [];
 let currentTab = 'file';
+let currentArtifactsData = null;
 
 // ── Init ───────────────────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', () => {
@@ -822,7 +1093,9 @@ async function runAnalysis() {
       if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
       data = [await res.json()];
     }
+    currentArtifactsData = data;
     renderResults(data);
+    runInvestigation(); // Automatically trigger cross-modal reasoning after analysis
   } catch (err) {
     showError(err.message);
   } finally {
@@ -838,7 +1111,9 @@ async function loadMock() {
     const res = await fetch(`${base}/analyze/mock`, { method: 'POST' });
     if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
     const data = await res.json();
-    renderResults(Array.isArray(data) ? data : [data]);
+    currentArtifactsData = Array.isArray(data) ? data : [data];
+    renderResults(currentArtifactsData);
+    runInvestigation(); // Automatically trigger cross-modal reasoning on mock load
   } catch (err) {
     showError(err.message);
   } finally {
@@ -846,16 +1121,374 @@ async function loadMock() {
   }
 }
 
+async function runInvestigation() {
+  const base = document.getElementById('api-base').value.trim();
+  setInvLoading(true);
+  hideError();
+  try {
+    let verdictData;
+    if (currentArtifactsData && currentArtifactsData.length > 0) {
+      const res = await fetch(`${base}/investigate/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(currentArtifactsData),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
+      verdictData = await res.json();
+    } else {
+      const res = await fetch(`${base}/investigate/mock`, { method: 'POST' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
+      verdictData = await res.json();
+    }
+    renderVerdict(verdictData);
+  } catch (err) {
+    showError(err.message);
+  } finally {
+    setInvLoading(false);
+  }
+}
+
 function clearResults() {
   selectedFiles = [];
+  currentArtifactsData = null;
   renderFileList();
   updateAnalyzeBtn();
   document.getElementById('url-input').value = '';
   document.getElementById('file-input').value = '';
   document.getElementById('artifacts-container').innerHTML = '';
+  document.getElementById('verdict-container').innerHTML = '';
+  document.getElementById('verdict-container').style.display = 'none';
   document.getElementById('summary-bar').style.display = 'none';
   document.getElementById('empty-state').style.display = 'flex';
   hideError();
+}
+
+function setInvLoading(on) {
+  const btn = document.getElementById('investigate-btn');
+  const spin = document.getElementById('inv-spinner');
+  const label = document.getElementById('inv-label');
+  if (btn) btn.disabled = on;
+  if (spin) spin.classList.toggle('active', on);
+  if (label) label.textContent = on ? 'Reasoning…' : '🛡️ Run Trust Investigation';
+}
+
+function renderVerdict(v) {
+  document.getElementById('empty-state').style.display = 'none';
+  const container = document.getElementById('verdict-container');
+  container.style.display = 'block';
+
+  const confPct = Math.round((v.confidence || 0) * 100);
+  const covPct = Math.round((v.evidence_coverage || 0) * 100);
+  const verdictClass = v.verdict || 'INSUFFICIENT_EVIDENCE';
+  const icon = {
+    'AUTHENTIC': '🟢',
+    'MANIPULATED': '🟡',
+    'COORDINATED_SYNTHETIC': '🔴',
+    'INSUFFICIENT_EVIDENCE': '⚪'
+  }[verdictClass] || '❓';
+
+  const artifactScoresEntries = Object.values(v.artifact_scores || {});
+  const artifactScoresHtml = artifactScoresEntries.length > 0 ? `
+    <div style="margin-top: 14px;">
+      <div class="why-title">📊 Artifact-Level Manipulation Scores</div>
+      <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">
+        ${artifactScoresEntries.map(as => {
+          const scorePct = Math.round((as.manipulation_score || 0) * 100);
+          const color = scorePct >= 50 ? 'var(--red)' : (as.has_metadata_manipulation ? 'var(--amber)' : 'var(--green)');
+          return `
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
+              <div style="flex:1;">
+                <div style="font-size:12px;font-weight:600;color:var(--text);">${escHtml(as.artifact_id)} ${as.filename ? `<span style="font-size:11px;color:var(--muted);">(${escHtml(as.filename)})</span>` : ''}</div>
+                <div style="font-size:11px;color:var(--muted);margin-top:2px;">${escHtml(as.explanation)}</div>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-size:14px;font-weight:700;color:${color};">${scorePct}%</div>
+                <div style="font-size:10px;color:var(--muted);">Manip. Score</div>
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    </div>
+  ` : '';
+
+  const contradictionsHtml = (v.contradictions && v.contradictions.length > 0) ? `
+    <div style="margin-top: 14px;">
+      <div class="why-title">⚠️ Detected Contradictions & Conflicts (${v.contradictions.length})</div>
+      ${v.contradictions.map(c => `
+        <div class="contradiction-item">
+          <span class="sev-badge ${c.severity || 'medium'}">${c.severity || 'med'}</span>
+          <div style="flex:1;">
+            <div style="font-size:12px;font-weight:600;color:var(--text);">${escHtml(c.artifact_a)}${c.artifact_b && c.artifact_b !== c.artifact_a ? ` ↔ ${escHtml(c.artifact_b)}` : ''}</div>
+            <div style="font-size:12px;color:var(--muted);margin-top:2px;">${escHtml(c.description)}</div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  ` : '';
+
+  const relationshipsHtml = (v.relationships && v.relationships.length > 0)
+    ? buildEvidenceGraphHtml(v.relationships, v.artifact_scores)
+    : '';
+
+  container.innerHTML = `
+    <div class="verdict-card ${verdictClass}">
+      <div class="verdict-header-row">
+        <div class="verdict-badge-large ${verdictClass}">
+          ${icon} ${escHtml(verdictClass.replace('_', ' '))}
+        </div>
+        <div class="verdict-metrics-row">
+          <div class="v-metric">
+            <div class="v-metric-num">${confPct}%</div>
+            <div class="v-metric-label">Confidence</div>
+          </div>
+          <div class="v-metric">
+            <div class="v-metric-num">${covPct}%</div>
+            <div class="v-metric-label">Evidence Coverage</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="why-section">
+        <div class="why-title">🧠 Reasoning & "Why?" Explanation</div>
+        <div class="why-text">${escHtml(v.llm_explanation || (v.reasons || []).join('\n'))}</div>
+      </div>
+
+      ${artifactScoresHtml}
+      ${contradictionsHtml}
+      ${relationshipsHtml}
+    </div>
+  `;
+
+}
+
+
+// ── Evidence Graph Builder ──────────────────────────────────────────────────
+function buildEvidenceGraphHtml(relationships, artifactScores) {
+  if (!relationships || relationships.length === 0) return '';
+
+  const entitiesMap = new Map();
+  const artifactsSet = new Set();
+
+  relationships.forEach(r => {
+    const artA = r.artifact_a;
+    const artB = r.artifact_b;
+    if (artA) artifactsSet.add(artA);
+    if (artB) artifactsSet.add(artB);
+
+    const relStr = r.relation || 'related';
+    let entityId = relStr;
+    let badge = 'RELATIONSHIP';
+    let label = relStr;
+
+    if (relStr.includes(':')) {
+      const parts = relStr.split(':');
+      const prefix = parts[0].replace('shared_', '').replace('_', ' ');
+      badge = `SHARED ${prefix.toUpperCase()}`;
+      entityId = parts.slice(1).join(':');
+      label = entityId;
+    }
+
+    const key = `${badge}_${entityId}`;
+    if (!entitiesMap.has(key)) {
+      entitiesMap.set(key, {
+        key: key,
+        entityId: entityId,
+        label: label,
+        badge: badge,
+        artifacts: new Set()
+      });
+    }
+    const ent = entitiesMap.get(key);
+    if (artA) ent.artifacts.add(artA);
+    if (artB) ent.artifacts.add(artB);
+  });
+
+  const entities = Array.from(entitiesMap.values());
+  const artifacts = Array.from(artifactsSet);
+
+  const svgWidth = 760;
+  const svgHeight = 290;
+
+  const entityCoords = new Map();
+  entities.forEach((ent, idx) => {
+    const count = entities.length;
+    const x = count === 1 ? svgWidth / 2 : (svgWidth / (count + 1)) * (idx + 1);
+    const y = 65;
+    entityCoords.set(ent.key, {
+      x, y,
+      pctX: (x / svgWidth * 100).toFixed(1) + '%',
+      pctY: (y / svgHeight * 100).toFixed(1) + '%'
+    });
+  });
+
+  const artifactCoords = new Map();
+  artifacts.forEach((artId, idx) => {
+    const count = artifacts.length;
+    const margin = 140;
+    const x = count === 1 ? svgWidth / 2 : margin + (idx / Math.max(1, count - 1)) * (svgWidth - 2 * margin);
+    const y = 225;
+    artifactCoords.set(artId, {
+      x, y,
+      pctX: (x / svgWidth * 100).toFixed(1) + '%',
+      pctY: (y / svgHeight * 100).toFixed(1) + '%'
+    });
+  });
+
+  let svgLinesHtml = '';
+  entities.forEach(ent => {
+    const ePos = entityCoords.get(ent.key);
+    const safeKey = ent.key.replace(/[^a-zA-Z0-9]/g, '_');
+    ent.artifacts.forEach(artId => {
+      const aPos = artifactCoords.get(artId);
+      if (ePos && aPos) {
+        const pathD = `M ${ePos.x} ${ePos.y + 16} C ${ePos.x} ${(ePos.y + aPos.y)/2}, ${aPos.x} ${(ePos.y + aPos.y)/2}, ${aPos.x} ${aPos.y - 24}`;
+        svgLinesHtml += `
+          <path class="graph-edge-path edge-e-${escHtml(safeKey)} edge-a-${escHtml(artId)}"
+                d="${pathD}"
+                stroke="#8FB9D8"
+                stroke-width="2.5"
+                stroke-dasharray="6 4"
+                fill="none" />
+        `;
+      }
+    });
+  });
+
+  let entityNodesHtml = '';
+  entities.forEach(ent => {
+    const pos = entityCoords.get(ent.key);
+    const safeKey = ent.key.replace(/[^a-zA-Z0-9]/g, '_');
+    const artClasses = Array.from(ent.artifacts).map(a => `art-target-${a}`).join(' ');
+    const artIdArrStr = JSON.stringify(Array.from(ent.artifacts));
+
+    entityNodesHtml += `
+      <div class="net-node net-node-entity ${artClasses}"
+           data-entity-key="${safeKey}"
+           onmouseenter="highlightEntityGraph('${safeKey}', ${artIdArrStr.replace(/"/g, '&quot;')})"
+           onmouseleave="resetGraphHighlight()"
+           style="position:absolute; left:${pos.pctX}; top:${pos.pctY}; transform:translate(-50%, -50%); cursor:pointer;">
+        <div class="entity-badge-top">${escHtml(ent.badge)}</div>
+        <div class="entity-title"><span class="entity-dot">●</span> ${escHtml(ent.label)}</div>
+      </div>
+    `;
+  });
+
+  let artifactNodesHtml = '';
+  artifacts.forEach(artId => {
+    const pos = artifactCoords.get(artId);
+    const scoreObj = (artifactScores && artifactScores[artId]) || {};
+    const fname = scoreObj.filename || artId;
+    const icon = fname.match(/\.(mp4|mov|avi|webm)$/i) ? '🎥' : (fname.match(/\.(png|jpg|jpeg|webp)$/i) ? '🖼️' : '📄');
+
+    artifactNodesHtml += `
+      <div class="net-node net-node-artifact node-art-${artId}"
+           data-artifact-id="${artId}"
+           onmouseenter="highlightArtifactGraph('${artId}')"
+           onmouseleave="resetGraphHighlight()"
+           style="position:absolute; left:${pos.pctX}; top:${pos.pctY}; transform:translate(-50%, -50%); cursor:pointer;">
+        <div style="display:flex;align-items:center;justify-content:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--navy);">
+          <span>${icon}</span>
+          <span style="max-width:130px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${escHtml(fname)}">${escHtml(fname)}</span>
+        </div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--primary);font-weight:600;margin-top:3px;">${escHtml(artId)}</div>
+      </div>
+    `;
+  });
+
+  return `
+    <div class="net-graph-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <div>
+          <div style="font-size:13.5px;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:8px;">
+            <span style="color:var(--primary);font-size:15px;">🕸️</span> Evidence Graph
+          </div>
+          <div style="font-size:11.5px;color:var(--muted);margin-top:2px;">Cross-artifact relationships</div>
+        </div>
+        <div style="background:var(--primary-light);color:var(--primary);border:1px solid var(--primary-border);font-size:11.5px;font-weight:600;padding:4px 12px;border-radius:20px;">
+          ${relationships.length} ${relationships.length === 1 ? 'relationship' : 'relationships'}
+        </div>
+      </div>
+
+      <div class="net-graph-viewport">
+        <svg class="net-graph-svg" viewBox="0 0 760 290" preserveAspectRatio="xMidYMid meet">
+          ${svgLinesHtml}
+        </svg>
+        ${entityNodesHtml}
+        ${artifactNodesHtml}
+      </div>
+    </div>
+  `;
+}
+
+function highlightArtifactGraph(artId) {
+  document.querySelectorAll('.graph-edge-path').forEach(p => {
+    if (p.classList.contains(`edge-a-${artId}`)) {
+      p.setAttribute('stroke', '#4F46E5');
+      p.setAttribute('stroke-width', '3.5');
+      p.setAttribute('stroke-dasharray', 'none');
+    } else {
+      p.setAttribute('opacity', '0.2');
+    }
+  });
+
+  document.querySelectorAll('.net-node-artifact').forEach(n => {
+    if (n.getAttribute('data-artifact-id') === artId) {
+      n.classList.add('highlighted');
+    } else {
+      n.style.opacity = '0.35';
+    }
+  });
+
+  document.querySelectorAll('.net-node-entity').forEach(n => {
+    if (n.classList.contains(`art-target-${artId}`)) {
+      n.classList.add('highlighted');
+    } else {
+      n.style.opacity = '0.35';
+    }
+  });
+}
+
+function highlightEntityGraph(safeKey, artIds) {
+  document.querySelectorAll('.graph-edge-path').forEach(p => {
+    if (p.classList.contains(`edge-e-${safeKey}`)) {
+      p.setAttribute('stroke', '#4F46E5');
+      p.setAttribute('stroke-width', '3.5');
+      p.setAttribute('stroke-dasharray', 'none');
+    } else {
+      p.setAttribute('opacity', '0.2');
+    }
+  });
+
+  document.querySelectorAll('.net-node-entity').forEach(n => {
+    if (n.getAttribute('data-entity-key') === safeKey) {
+      n.classList.add('highlighted');
+    } else {
+      n.style.opacity = '0.35';
+    }
+  });
+
+  document.querySelectorAll('.net-node-artifact').forEach(n => {
+    const aId = n.getAttribute('data-artifact-id');
+    if (artIds.includes(aId)) {
+      n.classList.add('highlighted');
+    } else {
+      n.style.opacity = '0.35';
+    }
+  });
+}
+
+function resetGraphHighlight() {
+  document.querySelectorAll('.graph-edge-path').forEach(p => {
+    p.setAttribute('stroke', '#8FB9D8');
+    p.setAttribute('stroke-width', '2.5');
+    p.setAttribute('stroke-dasharray', '6 4');
+    p.removeAttribute('opacity');
+  });
+  document.querySelectorAll('.net-node').forEach(n => {
+    n.classList.remove('highlighted');
+    n.style.opacity = '1';
+  });
 }
 
 // ── Render ─────────────────────────────────────────────────────────────────
@@ -870,7 +1503,7 @@ function renderResults(artifacts) {
     a.evidence.some(e => e.type === 'manipulation' && e.value === 'synthetic_visual'));
   const persons = new Set(
     artifacts.flatMap(a =>
-      a.evidence.filter(e => e.type === 'person').map(e => e.value?.person_id)
+      a.evidence.filter(e => e.type === 'person').map(e => e.value?.person_id || (e.value?.face_index != null ? `person_${String(Number(e.value.face_index) + 1).padStart(2, '0')}` : null))
     ).filter(Boolean)
   );
 
@@ -995,7 +1628,7 @@ function buildManipRow(ev) {
 
 function buildPersonCard(ev) {
   const v   = ev.value || {};
-  const pid = v.person_id || `face_${v.face_index ?? '?'}`;
+  const pid = v.person_id || (v.face_index != null ? `person_${String(Number(v.face_index) + 1).padStart(2, '0')}` : `face_${v.face_index ?? '?'}`);
   const conf = Math.round((ev.confidence || 0) * 100);
   const ts  = ev.frame_timestamp != null ? `<div class="person-conf">@ ${ev.frame_timestamp}s</div>` : '';
   return `

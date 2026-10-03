@@ -11,9 +11,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 
-from routers import analyze
+from routers import analyze, investigate
 
 logger = logging.getLogger(__name__)
+
 
 
 @asynccontextmanager
@@ -51,6 +52,7 @@ app.add_middleware(
 )
 
 app.include_router(analyze.router)
+app.include_router(investigate.router)
 
 
 @app.get("/", include_in_schema=False)
