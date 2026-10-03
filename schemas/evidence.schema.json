@@ -1,0 +1,70 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Evidence",
+  "description": "Structured evidence emitted by Participant 1's analysis backend for a single artifact",
+  "type": "object",
+  "required": ["artifact_id", "type", "filename", "evidence"],
+  "properties": {
+    "artifact_id": {
+      "type": "string",
+      "description": "Unique identifier for the artifact within a session (e.g., img_01, vid_02)"
+    },
+    "type": {
+      "type": "string",
+      "enum": ["image", "video", "audio", "document"],
+      "description": "Modality of the artifact"
+    },
+    "filename": {
+      "type": "string",
+      "description": "Original filename"
+    },
+    "mime_type": {
+      "type": "string",
+      "description": "MIME type of the file"
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "value", "confidence"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "person",
+              "location",
+              "manipulation",
+              "metadata",
+              "transcription",
+              "speaker",
+              "synthetic_audio",
+              "ocr_text",
+              "object"
+            ]
+          },
+          "value": {
+            "description": "Evidence payload — string, number, or object depending on type"
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "source_model": {
+            "type": "string",
+            "description": "Which model produced this evidence item"
+          },
+          "frame_timestamp": {
+            "type": "number",
+            "description": "For video evidence: timestamp in seconds of the source frame"
+          }
+        }
+      }
+    },
+    "analysis_errors": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Non-fatal errors encountered during analysis"
+    }
+  }
+}

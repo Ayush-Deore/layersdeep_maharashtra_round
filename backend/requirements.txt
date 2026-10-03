@@ -1,0 +1,26 @@
+fastapi>=0.111.0
+uvicorn[standard]>=0.29.0
+python-multipart>=0.0.9
+aiofiles>=23.2.1
+
+# Image / video processing
+Pillow>=10.3.0
+opencv-python-headless>=4.9.0
+hachoir>=3.3.0
+
+# Face analysis
+insightface>=0.7.3
+onnxruntime>=1.18.0
+
+# Deepfake detection (HuggingFace)
+transformers>=4.41.0
+torch>=2.3.0
+torchvision>=0.18.0
+
+# HTTP client (for /analyze/url)
+httpx>=0.27.0
+
+# Utilities
+python-magic-bin>=0.4.14; sys_platform == "win32"
+python-magic>=0.4.27; sys_platform != "win32"
+pydantic>=2.7.0

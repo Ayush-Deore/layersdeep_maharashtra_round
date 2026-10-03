@@ -1,0 +1,151 @@
+[
+  {
+    "artifact_id": "img_a1b2c3",
+    "type": "image",
+    "filename": "press_photo.jpg",
+    "mime_type": "image/jpeg",
+    "evidence": [
+      {
+        "type": "person",
+        "value": {
+          "face_index": 0,
+          "embedding": null,
+          "bbox": [112, 45, 380, 420],
+          "age": 38,
+          "gender": "M"
+        },
+        "confidence": 0.97,
+        "source_model": "insightface/buffalo_l"
+      },
+      {
+        "type": "manipulation",
+        "value": "synthetic_visual",
+        "confidence": 0.12,
+        "source_model": "dima806/deepfake_vs_real_image_detection"
+      },
+      {
+        "type": "metadata",
+        "value": {
+          "size_bytes": 2847219,
+          "filename": "press_photo.jpg",
+          "make": "Canon",
+          "model": "EOS R5",
+          "gps_present": false
+        },
+        "confidence": 1.0,
+        "source_model": "metadata_analyzer"
+      }
+    ],
+    "analysis_errors": []
+  },
+  {
+    "artifact_id": "img_d4e5f6",
+    "type": "image",
+    "filename": "rally_crowd.jpg",
+    "mime_type": "image/jpeg",
+    "evidence": [
+      {
+        "type": "person",
+        "value": {
+          "face_index": 0,
+          "embedding": null,
+          "bbox": [90, 60, 260, 340],
+          "age": 39,
+          "gender": "M"
+        },
+        "confidence": 0.91,
+        "source_model": "insightface/buffalo_l"
+      },
+      {
+        "type": "manipulation",
+        "value": "synthetic_visual",
+        "confidence": 0.88,
+        "source_model": "dima806/deepfake_vs_real_image_detection"
+      },
+      {
+        "type": "manipulation",
+        "value": "editing_software_detected:Adobe Photoshop 25.0",
+        "confidence": 0.72,
+        "source_model": "metadata_analyzer"
+      },
+      {
+        "type": "metadata",
+        "value": {
+          "size_bytes": 3104888,
+          "filename": "rally_crowd.jpg",
+          "make": "SONY",
+          "model": "ILCE-7M4",
+          "software": "Adobe Photoshop 25.0 (Windows)",
+          "gps_present": true
+        },
+        "confidence": 1.0,
+        "source_model": "metadata_analyzer"
+      }
+    ],
+    "analysis_errors": []
+  },
+  {
+    "artifact_id": "vid_g7h8i9",
+    "type": "video",
+    "filename": "speech_clip.mp4",
+    "mime_type": "video/mp4",
+    "evidence": [
+      {
+        "type": "person",
+        "value": {
+          "face_index": 0,
+          "embedding": null,
+          "bbox": [200, 80, 520, 500],
+          "age": 41,
+          "gender": "M"
+        },
+        "confidence": 0.93,
+        "source_model": "insightface/buffalo_l",
+        "frame_timestamp": 0
+      },
+      {
+        "type": "manipulation",
+        "value": "synthetic_visual (detected in 4 frames)",
+        "confidence": 0.82,
+        "source_model": "dima806/deepfake_vs_real_image_detection",
+        "frame_timestamp": 10
+      },
+      {
+        "type": "metadata",
+        "value": {
+          "size_bytes": 18492000,
+          "filename": "speech_clip.mp4",
+          "duration_seconds": 47.3
+        },
+        "confidence": 1.0,
+        "source_model": "metadata_analyzer"
+      }
+    ],
+    "analysis_errors": []
+  },
+  {
+    "artifact_id": "img_j0k1l2",
+    "type": "image",
+    "filename": "document_scan.png",
+    "mime_type": "image/png",
+    "evidence": [
+      {
+        "type": "manipulation",
+        "value": "datetime_mismatch",
+        "confidence": 0.55,
+        "source_model": "metadata_analyzer"
+      },
+      {
+        "type": "metadata",
+        "value": {
+          "size_bytes": 945120,
+          "filename": "document_scan.png",
+          "gps_present": false
+        },
+        "confidence": 1.0,
+        "source_model": "metadata_analyzer"
+      }
+    ],
+    "analysis_errors": []
+  }
+]
