@@ -7,6 +7,86 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
+
+    /* ── Compare View ─────────────────────────────────────────────────── */
+    .compare-panel {
+      display: none;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .compare-panel.active { display: grid; grid-template-columns: 1fr 1fr; }
+    .compare-col {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .compare-col-header {
+      padding: 10px 14px;
+      background: var(--surface-muted);
+      border-bottom: 1px solid var(--border);
+      font-weight: 600;
+      font-size: 12px;
+      color: var(--navy);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .compare-img { width: 100%; max-height: 240px; object-fit: contain; display: block; background: #0f172a; }
+    .compare-video { width: 100%; max-height: 240px; display: block; background: #0f172a; }
+    .compare-signals {
+      padding: 10px 14px;
+      border-top: 1px solid var(--border);
+    }
+    .compare-signal-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 5px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+    }
+    .compare-signal-row:last-child { border-bottom: none; }
+    .compare-meta-table {
+      display: none;
+      margin-bottom: 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .compare-meta-table.active { display: block; }
+    .compare-meta-table table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .compare-meta-table th {
+      background: var(--surface-muted);
+      padding: 8px 12px;
+      text-align: left;
+      font-weight: 600;
+      color: var(--navy);
+      border-bottom: 1px solid var(--border);
+    }
+    .compare-meta-table td {
+      padding: 7px 12px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      vertical-align: top;
+    }
+    .compare-meta-table tr:last-child td { border-bottom: none; }
+    .compare-meta-table tr.diff-row td { background: #fffbeb; }
+    .compare-meta-table tr.diff-row td:first-child { font-weight: 600; color: var(--amber); }
+    .compare-toggle-bar {
+      display: flex; gap: 8px; align-items: center;
+      margin-bottom: 14px;
+    }
+    .btn-compare {
+      background: var(--primary-light);
+      color: var(--primary);
+      border: 1px solid var(--primary-border);
+      border-radius: 8px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-compare:hover { background: var(--primary); color: #fff; }
+    .btn-compare.active { background: var(--primary); color: #fff; }
     /* ── Reset & Enterprise Tokens ───────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -1094,7 +1174,18 @@ async function runAnalysis() {
       data = [await res.json()];
     }
     currentArtifactsData = data;
-    renderResults(data);
+    
+    // Inject local object URLs for preview if it was a file upload
+    if (currentTab === 'file') {
+      currentArtifactsData.forEach(art => {
+        const file = selectedFiles.find(f => f.name === art.filename);
+        if (file) {
+          art.preview_url = URL.createObjectURL(file);
+        }
+      });
+    }
+
+    renderResults(currentArtifactsData);
     runInvestigation(); // Automatically trigger cross-modal reasoning after analysis
   } catch (err) {
     showError(err.message);
@@ -1531,10 +1622,147 @@ function renderResults(artifacts) {
     </div>
   `;
 
+  // Compare toggle bar (only show when 2+ artifacts loaded)
+  const existingToggle = document.getElementById('compare-toggle-bar');
+  if (existingToggle) existingToggle.remove();
+  if (artifacts.length >= 2) {
+    const toggleBar = document.createElement('div');
+    toggleBar.className = 'compare-toggle-bar';
+    toggleBar.id = 'compare-toggle-bar';
+    toggleBar.innerHTML = `
+      <button class="btn-compare" id="btn-compare-visual" onclick="toggleCompare('visual')">
+        🖼️ Compare Images
+      </button>
+      <button class="btn-compare" id="btn-compare-meta" onclick="toggleCompare('meta')">
+        📋 Compare Metadata
+      </button>
+      <span style="font-size:11px;color:var(--muted);margin-left:4px">Comparing first 2 artifacts</span>
+    `;
+    container.appendChild(toggleBar);
+
+    // Visual compare panel
+    const vcPanel = document.createElement('div');
+    vcPanel.id = 'compare-visual-panel';
+    vcPanel.className = 'compare-panel';
+    vcPanel.innerHTML = buildComparePanelHTML(artifacts[0], artifacts[1]);
+    container.appendChild(vcPanel);
+
+    // Metadata diff table
+    const metaPanel = document.createElement('div');
+    metaPanel.id = 'compare-meta-panel';
+    metaPanel.className = 'compare-meta-table';
+    metaPanel.innerHTML = buildMetaDiffHTML(artifacts[0], artifacts[1]);
+    container.appendChild(metaPanel);
+  }
+
   artifacts.forEach(a => {
     container.appendChild(buildArtifactCard(a));
   });
 }
+
+function toggleCompare(mode) {
+  if (mode === 'visual') {
+    const panel = document.getElementById('compare-visual-panel');
+    const btn = document.getElementById('btn-compare-visual');
+    const isActive = panel.classList.toggle('active');
+    btn.classList.toggle('active', isActive);
+    document.getElementById('compare-meta-panel').classList.remove('active');
+    document.getElementById('btn-compare-meta').classList.remove('active');
+  } else {
+    const panel = document.getElementById('compare-meta-panel');
+    const btn = document.getElementById('btn-compare-meta');
+    const isActive = panel.classList.toggle('active');
+    btn.classList.toggle('active', isActive);
+    document.getElementById('compare-visual-panel').classList.remove('active');
+    document.getElementById('btn-compare-visual').classList.remove('active');
+  }
+}
+
+function buildComparePanelHTML(artA, artB) {
+  function colHTML(art) {
+    const manips = art.evidence.filter(e => e.type === 'manipulation');
+    const isVideo = art.type === 'video' || (art.mime_type || '').includes('video');
+    const mediaURL = art.preview_url || art.source_url || '';
+    const mediaHTML = mediaURL
+      ? (isVideo
+          ? `<video class="compare-video" src="${escHtml(mediaURL)}" controls></video>`
+          : `<img class="compare-img" src="${escHtml(mediaURL)}" alt="preview">`)
+      : `<div style="height:140px;display:flex;align-items:center;justify-content:center;background:#0f172a;color:#475569;font-size:12px;">No preview available</div>`;
+
+    const synth = manips.filter(m => String(m.value).includes('synthetic'));
+    const auth  = manips.filter(m => String(m.value).includes('authentic'));
+    const verdict = synth.length > 0 ? { label: 'Likely Manipulated', color: 'var(--red)', icon: '🔴' }
+                  : auth.length  > 0 ? { label: 'Likely Authentic',   color: 'var(--green)', icon: '🟢' }
+                  : { label: 'Uncertain', color: 'var(--amber)', icon: '🟡' };
+    const topConf = manips.length > 0 ? Math.round(Math.max(...manips.map(m => m.confidence || 0)) * 100) : '—';
+
+    const signalRows = manips.slice(0, 5).map(m => {
+      const val = typeof m.value === 'string' ? m.value : JSON.stringify(m.value);
+      const conf = Math.round((m.confidence || 0) * 100);
+      const isBad = val.includes('synthetic') || val.includes('editing') || val.includes('mismatch');
+      const c = isBad ? 'var(--red)' : (val.includes('authentic') ? 'var(--green)' : 'var(--amber)');
+      return `<div class="compare-signal-row">
+        <span style="color:${c};font-weight:500">${escHtml(val)}</span>
+        <span style="color:${c};font-weight:700">${conf}%</span>
+      </div>`;
+    }).join('');
+
+    return `
+      <div class="compare-col-header">
+        <span>${typeIcon(art.type)}</span>
+        <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escHtml(art.filename)}">${escHtml(art.filename)}</span>
+        <span style="color:${verdict.color};font-weight:700">${verdict.icon} ${verdict.label}</span>
+      </div>
+      ${mediaHTML}
+      <div class="compare-signals">
+        <div style="font-size:11px;font-weight:600;color:var(--muted);margin-bottom:6px;">TOP SIGNALS</div>
+        ${signalRows || '<div style="font-size:12px;color:var(--green)">✅ No manipulation signals</div>'}
+        <div style="margin-top:8px;font-size:11px;color:var(--muted);">
+          Peak confidence: <strong style="color:${verdict.color}">${topConf}${typeof topConf === 'number' ? '%' : ''}</strong>
+        </div>
+      </div>`;
+  }
+  return `<div class="compare-col">${colHTML(artA)}</div><div class="compare-col">${colHTML(artB)}</div>`;
+}
+
+function buildMetaDiffHTML(artA, artB) {
+  const metaA = artA.evidence.find(e => e.type === 'metadata');
+  const metaB = artB.evidence.find(e => e.type === 'metadata');
+  const vA = metaA?.value || {};
+  const vB = metaB?.value || {};
+  const allKeys = new Set([...Object.keys(vA), ...Object.keys(vB)]);
+
+  const rows = Array.from(allKeys).map(k => {
+    const a = vA[k] != null ? String(vA[k]) : '—';
+    const b = vB[k] != null ? String(vB[k]) : '—';
+    const isDiff = a !== b;
+    return `<tr class="${isDiff ? 'diff-row' : ''}">
+      <td>${escHtml(k)}</td>
+      <td>${escHtml(a)}</td>
+      <td>${escHtml(b)}</td>
+    </tr>`;
+  }).join('');
+
+  const fnA = escHtml(artA.filename);
+  const fnB = escHtml(artB.filename);
+
+  return `
+    <div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+      <div style="font-size:13px;font-weight:700;color:var(--navy);">📋 Metadata Comparison</div>
+      <div style="font-size:11px;color:var(--amber);font-weight:600;">🔶 Highlighted rows = differences</div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th style="width:33%">Field</th>
+          <th style="width:33%">${fnA}</th>
+          <th style="width:33%">${fnB}</th>
+        </tr>
+      </thead>
+      <tbody>${rows || '<tr><td colspan="3" style="color:var(--muted);text-align:center">No metadata available</td></tr>'}</tbody>
+    </table>`;
+}
+
 
 function buildArtifactCard(artifact) {
   const div = document.createElement('div');
@@ -1552,6 +1780,16 @@ function buildArtifactCard(artifact) {
       <span class="artifact-mime">${escHtml(artifact.mime_type || '')}</span>
       <span class="artifact-id">${escHtml(artifact.artifact_id)}</span>
     </div>
+
+    <!-- Media Preview -->
+    ${(artifact.preview_url || artifact.source_url) ? `
+      <div style="background: var(--surface); text-align: center; border-bottom: 1px solid var(--border);">
+        ${(artifact.type === 'video' || (artifact.mime_type || '').includes('video')) 
+          ? `<video src="${escHtml(artifact.preview_url || artifact.source_url)}" controls style="max-width: 100%; max-height: 250px; display: block; margin: 0 auto;"></video>`
+          : `<img src="${escHtml(artifact.preview_url || artifact.source_url)}" alt="Preview" style="max-width: 100%; max-height: 250px; display: block; margin: 0 auto; object-fit: contain;">`
+        }
+      </div>
+    ` : ''}
 
     <!-- Body -->
     <div class="artifact-body">
@@ -1601,12 +1839,22 @@ function buildManipRow(ev) {
   const color = isBad ? 'var(--red)' : (value.includes('authentic') ? 'var(--green)' : 'var(--amber)');
   const icon  = isBad ? '🔴' : (value.includes('authentic') ? '🟢' : '🟡');
 
-  const detail = ev.detail ? `
-    <div class="manip-detail">
-      Frames flagged: ${ev.detail.frames_flagged} / ${ev.detail.frames_analyzed} &nbsp;|&nbsp;
-      Avg: ${(ev.detail.avg_confidence * 100).toFixed(1)}% &nbsp;|&nbsp;
-      Peak: ${(ev.detail.peak_confidence * 100).toFixed(1)}%
-    </div>` : '';
+  let detail = '';
+  if (ev.detail) {
+    if (ev.detail.frames_flagged !== undefined) {
+      detail = `
+        <div class="manip-detail">
+          Frames flagged: ${ev.detail.frames_flagged} / ${ev.detail.frames_analyzed} &nbsp;|&nbsp;
+          Avg: ${(ev.detail.avg_confidence * 100).toFixed(1)}% &nbsp;|&nbsp;
+          Peak: ${(ev.detail.peak_confidence * 100).toFixed(1)}%
+        </div>`;
+    } else if (ev.detail.face_crop) {
+      detail = `
+        <div class="manip-detail">
+          Face Crop Analysis &nbsp;|&nbsp; Person ID: ${escHtml(ev.detail.person_id || 'Unknown')}
+        </div>`;
+    }
+  }
 
   const ts = ev.frame_timestamp != null
     ? `<div class="manip-detail">Frame @ ${ev.frame_timestamp}s</div>` : '';

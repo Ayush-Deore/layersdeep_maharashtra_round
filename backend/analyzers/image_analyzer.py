@@ -191,7 +191,36 @@ def _run_face_analysis(path: str, registry=None) -> list[dict]:
         return []
 
 
-# ── Public API ──────────────────────────────────────────────────────────────────
+
+def _run_background_noise_detection(path: str) -> list[dict]:
+    """Detect whether the background appears overly smooth (synthetic) or contains natural camera noise.
+    Returns an evidence item with type 'background' and value either 'synthetic_background' or 'authentic_background'.
+    """
+    try:
+        import cv2
+        img = _load_cv2_image(path)
+        if img is None:
+            return []
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        # Compute variance of Laplacian – higher means more texture/noise.
+        laplacian_var = cv2.Laplacian(gray, cv2.CV_64F).var()
+        # Threshold empirically chosen: < 30 -> smooth synthetic background
+        if laplacian_var < 30:
+            label = "synthetic_background"
+            confidence = max(0.0, 1 - laplacian_var / 30)  # higher confidence when very smooth
+        else:
+            label = "authentic_background"
+            confidence = min(1.0, laplacian_var / 100)  # cap confidence
+        return [{
+            "type": "background",
+            "value": label,
+            "confidence": round(confidence, 4),
+            "source_model": "camera_noise_estimator",
+        }]
+    except Exception as exc:
+        logger.warning("Background noise detection failed: %s", exc)
+        return []
+
 
 def analyze(path: str, registry=None) -> tuple[list[dict], list[str]]:
     """
@@ -209,7 +238,13 @@ def analyze(path: str, registry=None) -> tuple[list[dict], list[str]]:
     except Exception as exc:
         errors.append(f"face_analysis: {exc}")
 
-    # 2. Run deepfake detection on full image
+    # 2. Run background noise detection
+    try:
+        evidence.extend(_run_background_noise_detection(path))
+    except Exception as exc:
+        errors.append(f"background_noise_detection: {exc}")
+
+    # 3. Run deepfake detection on full image
     try:
         evidence.extend(_run_deepfake_detection(path))
     except Exception as exc:

@@ -7,6 +7,8 @@ TrustLayer's AI Analysis Backend is currently operational and actively processin
 
 *   **Image Analysis (ViT Deepfake Detection)**: 
     *   Powered by `dima806/deepfake_vs_real_image_detection` (HuggingFace).
+    *   **Face-Crop Analysis**: Extracts bounding boxes via InsightFace and runs the deepfake detector specifically on isolated face crops to prevent artifacts from being destroyed by downscaling.
+    *   **Background Noise Detection**: Uses Laplacian variance to detect synthetically smooth backgrounds versus natural camera noise (`synthetic_background` vs `authentic_background`).
     *   Automatically resizes large images to prevent out-of-memory errors.
     *   Normalizes labels across different vocabularies to definitively output `synthetic_visual`, `authentic_visual`, or `uncertain`.
 *   **Face Detection & Recognition**:
@@ -26,6 +28,7 @@ TrustLayer's AI Analysis Backend is currently operational and actively processin
 *   **File Uploads (`POST /analyze/`)**: Accepts drag-and-drop batch uploads (images and videos) and processes them simultaneously under a single session.
 *   **URL Processing (`POST /analyze/url`)**: Can download and analyze public images and videos directly from a provided link via async `httpx`.
 *   **Zero Cold-Start**: Models are pre-warmed in a background thread on server startup, ensuring the first request is immediately responsive.
+*   **Custom Fine-Tuning**: Provides a PyTorch/HuggingFace script (`train_vit.py`) to easily fine-tune the baseline ViT deepfake model on organization-specific or highly sophisticated deepfake datasets.
 
 ## 3. Frontend Validator UI
 

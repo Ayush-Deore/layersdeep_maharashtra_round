@@ -467,5 +467,22 @@ Deterministic fixtures demonstrating all 4 PRD verdicts:
 - **Contradiction Cards**: Renders flagged conflicts with severity badges (`HIGH`, `MEDIUM`, `LOW`).
 - **Cross-Artifact Evidence Graph**: Interactive visual network diagram mapping shared entity nodes (`SHARED PERSON: person_01`) to connected digital artifacts (`press_photo.jpg`, `rally_crowd.jpg`, `speech_clip.mp4`) with smooth Bezier edge curves and hover interaction highlights.
 
+---
 
+# 13. Update — Custom Model Fine-Tuning Setup (2026-10-04)
+
+**Added infrastructure to allow fine-tuning the deepfake detection model on custom datasets.**
+
+### Changes
+- Created `backend/training/train_vit.py`, a PyTorch/HuggingFace Trainer script that enables training the `dima806/ViT` deepfake model on custom, highly-specific datasets.
+- The script automatically handles image transformations, resizing, evaluation metrics (accuracy), and best-model checkpointing.
+- This will allow TrustLayer to move beyond the baseline deepfake model and adapt to organization-specific threat models.
+
+---
+
+# 14. Update — Visual Previews & Video Sampling (2026-10-04)
+
+### Changes
+- **Visual Previews**: Added inline image and video rendering to the frontend Artifact Cards. The UI now generates local ObjectURLs for uploaded files (and uses source URLs for remote files) to allow users to visually compare the pictures side-by-side alongside the metadata and manipulation signals.
+- **Video Sampling**: Reduced the baseline video sampling interval from 5 seconds down to 3 seconds for higher forensic granularity.
 

@@ -18,7 +18,7 @@ from typing import Optional
 logger = logging.getLogger(__name__)
 
 MAX_FRAMES = 12          # hard cap to keep CPU inference tractable
-BASE_INTERVAL = 5        # default seconds between frames
+BASE_INTERVAL = 3        # default seconds between frames
 MIN_INTERVAL = 2         # minimum even for short clips
 
 
